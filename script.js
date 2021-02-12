@@ -1,9 +1,12 @@
 const wordEl = document.getElementById("word");
 const wrongLettersEl = document.getElementById("wrongLetters");
 const playAgainBtn = document.getElementById("playAgainBtn");
+const playAgainBtn2 = document.getElementById("playAgainBtn2");
+const showWordBtn = document.getElementById("showWordBtn");
 const popup = document.getElementById("popupContainer");
 const notification = document.getElementById("notificationContainer");
 const finalMessage = document.getElementById("finalMessage");
+const playAgainContainer = document.querySelector(".play-again-container");
 
 const figureParts = document.querySelectorAll(".figure-part");
 
@@ -47,6 +50,7 @@ function displayWord() {
   if (innerWord === selectedWord) {
     finalMessage.innerText = "Congratulations! You won.";
     popup.style.display = "flex";
+    showWordBtn.style.display = "none";
   }
 }
 
@@ -71,6 +75,7 @@ function updateWrongLettersEl() {
   if (wrongLetters.length === figureParts.length) {
     finalMessage.innerText = "Unfortunately you lost";
     popup.style.display = "flex";
+    showWordBtn.style.display = "block";
   }
 }
 
@@ -81,6 +86,19 @@ function showNotification() {
   setTimeout(() => {
     notification.classList.remove("show");
   }, 2000);
+}
+
+// Show word
+function showWord() {
+  popup.style.display = "none";
+
+  wordEl.innerHTML = `
+    ${selectedWord
+      .split("")
+      .map((letter) => `<span class="letter">${letter}</span>`)
+      .join("")}`;
+
+  playAgainContainer.style.display = "block";
 }
 
 // Keyboard letter press
@@ -123,4 +141,23 @@ playAgainBtn.addEventListener("click", () => {
   popup.style.display = "none";
 });
 
+// Play Again after showing word
+playAgainBtn2.addEventListener("click", () => {
+  // Empty arrays
+  correctLetters.splice(0);
+  wrongLetters.splice(0);
+
+  selectedWord = words[Math.floor(Math.random() * words.length)];
+
+  displayWord();
+
+  updateWrongLettersEl();
+
+  popup.style.display = "none";
+  playAgainContainer.style.display = "none";
+});
+
 displayWord();
+
+// Show word if user lost at the end
+showWordBtn.addEventListener("click", showWord);
